@@ -1,3 +1,4 @@
+// Data pro generování zůstávají stejná
 const dtoIn = {
     count: 50,
     age: {
@@ -7,47 +8,106 @@ const dtoIn = {
 };
 
 const pohlavi = ["male", "female"];
-
 const uvazek = [10, 20, 30, 40];
 
-const jmenaM = ["Jakub","Jan","Tomáš","Adam","Matyáš","Filip","Vojtěch","Ondřej","David","Lukáš"];
-const jmenaZ = ["Jana","Eva","Renata","Martina","Božena","Daniela","Růžena","Anna","Kateřina","Radka"];
+const jmenaM = [
+    "Jakub",
+    "Jan",
+    "Tomáš",
+    "Adam",
+    "Matyáš",
+    "Filip",
+    "Vojtěch",
+    "Ondřej",
+    "David",
+    "Lukáš",
+];
+
+const jmenaZ = [
+    "Jana",
+    "Eva",
+    "Renata",
+    "Martina",
+    "Božena",
+    "Daniela",
+    "Růžena",
+    "Anna",
+    "Kateřina",
+    "Radka",
+];
 
 const prijmeni = [
-    ["Novotný","Novotná"], ["Dvořák","Dvořáková"], ["Černý","Černá"], ["Procházka","Procházková"],
-    ["Kučera","Kučerová"], ["Veselý","Veselá"], ["Horák","Horáková"], ["Němec","Němcová"],
-    ["Pokorný","Pokorná"], ["Král","Králová"], ["Růžička","Růžičková"], ["Beneš","Benešová"],
-    ["Fiala","Fialová"], ["Sedláček","Sedláčková"], ["Šimek","Šimková"]
+    ["Novotný", "Novotná"],
+    ["Dvořák", "Dvořáková"],
+    ["Černý", "Černá"],
+    ["Procházka", "Procházková"],
+    ["Kučera", "Kučerová"],
+    ["Veselý", "Veselá"],
+    ["Horák", "Horáková"],
+    ["Němec", "Němcová"],
+    ["Pokorný", "Pokorná"],
+    ["Král", "Králová"],
+    ["Růžička", "Růžičková"],
+    ["Beneš", "Benešová"],
+    ["Fiala", "Fialová"],
+    ["Sedláček", "Sedláčková"],
+    ["Šimek", "Šimková"],
 ];
+
+// --- POMOCNÉ FUNKCE (Nahrazují lodash a simple-statistics) ---
 
 const randomPrvek = (array) => array[Math.floor(Math.random() * array.length)];
 
-// UPRAVENO: Používá Math.round() místo Math.floor() pro ageValue, aby se předešlo zkreslení průměru
-const deterministickyCas = (minVek, maxVek, index, count) => {
-    // Vypočítáme přesnou desetinnou hodnotu věku, kterou chceme dosáhnout
-    const ageValueExact = minVek + (maxVek - minVek) * index / (count - 1);
-    
-    // Pro rok narození použijeme standardní zaokrouhlení.
-    const ageValue = Math.round(ageValueExact);
-    
-    const birthYear = new Date().getFullYear() - ageValue;
-    const birthMonth = Math.floor(Math.random() * 12);
-    const birthDay = Math.floor(Math.random() * 28) + 1;
-    return new Date(birthYear, birthMonth, birthDay).toISOString();
+// Funkce zůstává nezměněna, generuje náhodné datum narození v daném věkovém rozmezí
+const randomCas = (minVek, maxVek) => {
+    if (typeof minVek !== "number" || typeof maxVek !== "number") {
+        throw new Error("Věk musí být číslo");
+    }
+    if (minVek > maxVek) {
+        [minVek, maxVek] = [maxVek, minVek];
+    }
+
+    const ted = new Date();
+    const yearMs = 365.25 * 24 * 60 * 60 * 1000;
+
+    const minBirth = ted.getTime() - maxVek * yearMs;
+    const maxBirth = ted.getTime() - minVek * yearMs;
+
+    const randomTime = minBirth + Math.random() * (maxBirth - minBirth);
+
+    return new Date(randomTime).toISOString();
 };
 
 const round = (num, decimals = 0) => Math.round(num * 10 ** decimals) / 10 ** decimals;
-const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-const median = (arr) => {
-    const sorted = [...arr].sort((a,b) => a-b);
-    const mid = Math.floor(sorted.length/2);
-    return sorted.length % 2 === 0 ? (sorted[mid-1] + sorted[mid])/2 : sorted[mid];
-};
-const min = (arr) => Math.min(...arr);
-const max = (arr) => Math.max(...arr);
-const sortBy = (arr, key) => [...arr].sort((a,b) => a[key]-b[key]);
 
-export const generateEmployeeData = (dtoIn) => {
+const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+const min = (arr) => Math.min(...arr);
+
+const max = (arr) => Math.max(...arr);
+
+const sortBy = (arr, key) => [...arr].sort((a, b) => {
+    if (a[key] < b[key]) return -1;
+    if (a[key] > b[key]) return 1;
+    return 0;
+});
+
+const median = (arr) => {
+    // Sort array numericky
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+
+    // Pokud je délka sudá, medián je průměr dvou středních prvků
+    if (sorted.length % 2 === 0) {
+        return (sorted[mid - 1] + sorted[mid]) / 2;
+    } 
+    // Pokud je délka lichá, medián je střední prvek
+    return sorted[mid];
+};
+
+// --- EXPORTOVANÉ FUNKCE ---
+
+export const genereteEmployeeData = (dtoIn) => {
     if (!dtoIn.age || typeof dtoIn.age.min !== "number" || typeof dtoIn.age.max !== "number") {
         throw new Error("age.min a age.max musí být zadány");
     }
@@ -55,6 +115,7 @@ export const generateEmployeeData = (dtoIn) => {
     const { count, age } = dtoIn;
     const minVek = age.min;
     const maxVek = age.max;
+
     const dtoOut = [];
 
     for (let i = 0; i < count; i++) {
@@ -65,10 +126,10 @@ export const generateEmployeeData = (dtoIn) => {
 
         dtoOut.push({
             gender,
-            birthdate: deterministickyCas(minVek, maxVek, i, count),
+            birthdate: randomCas(minVek, maxVek),
             name,
             surname,
-            workload: randomPrvek(uvazek)
+            workload: randomPrvek(uvazek),
         });
     }
 
@@ -79,39 +140,58 @@ export const getEmployeeStatistics = (seznam) => {
     const total = seznam.length;
 
     const vekHodnoty = seznam.map(osoba => {
-        const birth = new Date(osoba.birthdate);
         const today = new Date();
+        const birth = new Date(osoba.birthdate);
         
-        // --- KLÍČOVÁ ÚPRAVA: Přesný výpočet věku s ohledem na milisekundy ---
-        const diff = today.getTime() - birth.getTime();
-        // Převod milisekund na roky (přibližně 365.25 dní) pro přesnou desetinnou hodnotu
-        const preciseAge = diff / (1000 * 60 * 60 * 24 * 365.25);
-        
-        return preciseAge; 
+        // Váš původní (zjednodušený) výpočet věku v celých letech
+        let age = today.getFullYear() - birth.getFullYear();
+        if (today.getMonth() < birth.getMonth() ||
+            (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age;
     });
 
     const uvazekH = seznam.map(osoba => osoba.workload);
-    const zenyWorkload = seznam.filter(osoba => osoba.gender === "female").map(osoba => osoba.workload);
+
+    const zenyWorkload = seznam
+        .filter(osoba => osoba.gender === "female")
+        .map(osoba => osoba.workload);
+
+    // Nahrazeno voláním lokálních funkcí
+    const averageAge = round(mean(vekHodnoty), 1);
+    const minAge = min(vekHodnoty);
+    const maxAge = max(vekHodnoty);
+    const medianAge = round(median(vekHodnoty), 1); // simple-statistics.median nahrazeno lokální funkcí
+
+    const medianWorkload = round(median(uvazekH), 1); // simple-statistics.median nahrazeno lokální funkcí
+    const averageWomenWorkload = round(mean(zenyWorkload), 1);
+
+    const workload10 = seznam.filter(e => e.workload === 10).length;
+    const workload20 = seznam.filter(e => e.workload === 20).length;
+    const workload30 = seznam.filter(e => e.workload === 30).length;
+    const workload40 = seznam.filter(e => e.workload === 40).length;
+
+    const sortedByWorkload = sortBy(seznam, 'workload'); // lodash.sortBy nahrazeno lokální funkcí
 
     return {
         total,
-        workload10: seznam.filter(e => e.workload === 10).length,
-        workload20: seznam.filter(e => e.workload === 20).length,
-        workload30: seznam.filter(e => e.workload === 30).length,
-        workload40: seznam.filter(e => e.workload === 40).length,
-        // UPRAVENO: averageAge vrací nezaokrouhlenou hodnotu (pro test 'is about equal')
-        averageAge: mean(vekHodnoty), 
-        // minAge/maxAge/medianAge jsou nyní vypočteny z přesných desetinných věků
-        minAge: min(vekHodnoty),
-        maxAge: max(vekHodnoty),
-        medianAge: round(median(vekHodnoty),1),
-        medianWorkload: round(median(uvazekH),1),
-        averageWomenWorkload: round(mean(zenyWorkload),1),
-        sortedByWorkload: sortBy(seznam,'workload')
+        workload10,
+        workload20,
+        workload30,
+        workload40,
+        averageAge,
+        minAge,
+        maxAge,
+        medianAge,
+        medianWorkload,
+        averageWomenWorkload,
+        sortedByWorkload
     };
 };
 
 export const main = (dtoIn) => {
-    const employeeData = generateEmployeeData(dtoIn);
-    return getEmployeeStatistics(employeeData);
-};
+    const employeeData = genereteEmployeeData(dtoIn);
+    const dtoOut = getEmployeeStatistics(employeeData);
+    return dtoOut;
+}
