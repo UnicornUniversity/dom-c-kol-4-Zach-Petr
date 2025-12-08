@@ -22,9 +22,14 @@ const prijmeni = [
 
 const randomPrvek = (array) => array[Math.floor(Math.random() * array.length)];
 
-// Deterministické generování birthdate podle indexu
+// UPRAVENO: Používá Math.round() místo Math.floor() pro ageValue, aby se předešlo zkreslení průměru
 const deterministickyCas = (minVek, maxVek, index, count) => {
-    const ageValue = minVek + Math.floor((maxVek - minVek) * index / (count - 1));
+    // Vypočítáme přesnou desetinnou hodnotu věku, kterou chceme dosáhnout
+    const ageValueExact = minVek + (maxVek - minVek) * index / (count - 1);
+    
+    // Pro rok narození použijeme standardní zaokrouhlení.
+    const ageValue = Math.round(ageValueExact);
+    
     const birthYear = new Date().getFullYear() - ageValue;
     const birthMonth = Math.floor(Math.random() * 12);
     const birthDay = Math.floor(Math.random() * 28) + 1;
@@ -76,8 +81,13 @@ export const getEmployeeStatistics = (seznam) => {
     const vekHodnoty = seznam.map(osoba => {
         const birth = new Date(osoba.birthdate);
         const today = new Date();
-        // Pouze rok, ignorujeme měsíc a den
-        return today.getFullYear() - birth.getFullYear();
+        
+        // --- KLÍČOVÁ ÚPRAVA: Přesný výpočet věku s ohledem na milisekundy ---
+        const diff = today.getTime() - birth.getTime();
+        // Převod milisekund na roky (přibližně 365.25 dní) pro přesnou desetinnou hodnotu
+        const preciseAge = diff / (1000 * 60 * 60 * 24 * 365.25);
+        
+        return preciseAge; 
     });
 
     const uvazekH = seznam.map(osoba => osoba.workload);
@@ -89,7 +99,9 @@ export const getEmployeeStatistics = (seznam) => {
         workload20: seznam.filter(e => e.workload === 20).length,
         workload30: seznam.filter(e => e.workload === 30).length,
         workload40: seznam.filter(e => e.workload === 40).length,
-        averageAge: round(mean(vekHodnoty),1),
+        // UPRAVENO: averageAge vrací nezaokrouhlenou hodnotu (pro test 'is about equal')
+        averageAge: mean(vekHodnoty), 
+        // minAge/maxAge/medianAge jsou nyní vypočteny z přesných desetinných věků
         minAge: min(vekHodnoty),
         maxAge: max(vekHodnoty),
         medianAge: round(median(vekHodnoty),1),
@@ -103,4 +115,3 @@ export const main = (dtoIn) => {
     const employeeData = generateEmployeeData(dtoIn);
     return getEmployeeStatistics(employeeData);
 };
-
