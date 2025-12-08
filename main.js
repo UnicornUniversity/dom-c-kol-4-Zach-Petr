@@ -1,5 +1,6 @@
-const load = require("lodash");
-const simpleS = require("simple-statistics");
+import load from "lodash";
+import simpleS from "simple-statistics";
+
 
 const dtoIn = {
     count: 50,
