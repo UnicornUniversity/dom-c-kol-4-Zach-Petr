@@ -126,7 +126,7 @@ export const getEmployeeStatistics = (seznam) => {
     
     // minAge a maxAge musí být zaokrouhleny na celé číslo pro smysluplnost (věk v letech)
     const minAge = Math.floor(min(vekHodnoty));
-    const maxAge = Math.ceil(max(vekHodnoty));
+    const maxAge = Math.floor(max(vekHodnoty));
     const medianAge = round(median(vekHodnoty), 1);
 
     const medianWorkload = round(median(uvazekH), 1);
