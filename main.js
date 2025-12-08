@@ -125,15 +125,12 @@ export const getEmployeeStatistics = (seznam) => {
     const total = seznam.length;
 
     const vekHodnoty = seznam.map(osoba => {
-        const today = new Date();
-        const birth = new Date(osoba.birthdate);
-        let age = today.getFullYear() - birth.getFullYear();
-        if (today.getMonth() < birth.getMonth() ||
-            (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) {
-            age--;
-        }
-        return age;
-    });
+    const birth = new Date(osoba.birthdate);
+    const diff = Date.now() - birth.getTime();
+    const yearMs = 365.25 * 24 * 60 * 60 * 1000;
+    return Math.floor(diff / yearMs);
+});
+
 
     const uvazekH = seznam.map(osoba => osoba.workload);
     const zenyWorkload = seznam.filter(osoba => osoba.gender === "female").map(osoba => osoba.workload);
