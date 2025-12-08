@@ -80,7 +80,7 @@ const randomCas = (minVek, maxVek) => {
     return new Date(randomTime).toISOString();
 };
 
-// --- vlastní jednoduché funkce ---
+
 const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 const round = (num, decimals = 0) => Math.round(num * 10 ** decimals) / 10 ** decimals;
 const median = (arr) => {
@@ -124,11 +124,19 @@ export const generateEmployeeData = (dtoIn) => {
 export const getEmployeeStatistics = (seznam) => {
     const total = seznam.length;
 
-    const vekHodnoty = seznam.map(osoba => {
+   const vekHodnoty = seznam.map(osoba => {
     const birth = new Date(osoba.birthdate);
-    const diff = Date.now() - birth.getTime();
-    const yearMs = 365.25 * 24 * 60 * 60 * 1000;
-    return Math.floor(diff / yearMs);
+    const today = new Date();
+
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+   
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+
+    return age;
 });
 
 
