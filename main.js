@@ -135,9 +135,6 @@ export const getEmployeeStatistics = (seznam) => {
     return age;
 });
 
-    console.log(`${osoba.name} ${osoba.surname} narozen: ${birth.toISOString().slice(0,10)}, věk: ${age}`);
-    return age;
-});
 
 
 
