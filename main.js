@@ -77,7 +77,7 @@ const randomCas = (minVek, maxVek) => {
     return new Date(randomTime).toISOString();
 };
 
-const genereteEmployeeData = (dtoIn) => {
+export const genereteEmployeeData = (dtoIn) => {
     if (!dtoIn.age || typeof dtoIn.age.min !== "number" || typeof dtoIn.age.max !== "number") {
         throw new Error("age.min a age.max musí být zadány");
     }
@@ -106,7 +106,7 @@ const genereteEmployeeData = (dtoIn) => {
     return dtoOut;
 };
 
-const getEmployeeStatistics = (seznam) => {
+export const getEmployeeStatistics = (seznam) => {
     const total = seznam.length;
 
     const vekHodnoty = seznam.map(osoba => {
