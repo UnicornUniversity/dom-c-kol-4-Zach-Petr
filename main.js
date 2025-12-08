@@ -145,6 +145,7 @@ export const getEmployeeStatistics = (seznam) => {
     const zenyWorkload = seznam.filter(osoba => osoba.gender === "female").map(osoba => osoba.workload);
 
     const averageAge = round(mean(vekHodnoty), 1);
+      console.log("Průměrný věk:", averageAge);
     const minAge = min(vekHodnoty);
     const maxAge = max(vekHodnoty);
     const medianAge = round(median(vekHodnoty), 1);
