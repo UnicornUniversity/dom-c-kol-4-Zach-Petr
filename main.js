@@ -92,7 +92,7 @@ const min = (arr) => Math.min(...arr);
 const max = (arr) => Math.max(...arr);
 const sortBy = (arr, key) => [...arr].sort((a, b) => a[key] - b[key]);
 
-export const genereteEmployeeData = (dtoIn) => {
+export const generateEmployeeData = (dtoIn) => {
     if (!dtoIn.age || typeof dtoIn.age.min !== "number" || typeof dtoIn.age.max !== "number") {
         throw new Error("age.min a age.max musí být zadány");
     }
@@ -170,6 +170,6 @@ export const getEmployeeStatistics = (seznam) => {
 };
 
 export const main = (dtoIn) => {
-    const employeeData = genereteEmployeeData(dtoIn);
+    const employeeData = generateEmployeeData(dtoIn);
     return getEmployeeStatistics(employeeData);
 };
