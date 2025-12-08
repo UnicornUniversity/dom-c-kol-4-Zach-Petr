@@ -135,9 +135,10 @@ export const getEmployeeStatistics = (seznam) => {
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
         age--;
     }
-
+    console.log(`${osoba.name} ${osoba.surname} narozen: ${birth.toISOString().slice(0,10)}, věk: ${age}`);
     return age;
 });
+
 
 
     const uvazekH = seznam.map(osoba => osoba.workload);
