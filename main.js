@@ -1,7 +1,3 @@
-import load from "lodash";
-import simpleS from "simple-statistics";
-
-
 const dtoIn = {
     count: 50,
     age: {
@@ -10,8 +6,17 @@ const dtoIn = {
     }
 };
 
-const pohlavi = ["male", "female"];
-const uvazek = [10, 20, 30, 40];
+const pohlavi = [
+    "male",
+    "female"
+];
+
+const uvazek = [
+    10,
+    20,
+    30,
+    40
+];
 
 const jmenaM = [
     "Jakub",
@@ -23,7 +28,7 @@ const jmenaM = [
     "Vojtěch",
     "Ondřej",
     "David",
-    "Lukáš",
+    "Lukáš"
 ];
 
 const jmenaZ = [
@@ -36,7 +41,7 @@ const jmenaZ = [
     "Růžena",
     "Anna",
     "Kateřina",
-    "Radka",
+    "Radka"
 ];
 
 const prijmeni = [
@@ -54,7 +59,7 @@ const prijmeni = [
     ["Beneš", "Benešová"],
     ["Fiala", "Fialová"],
     ["Sedláček", "Sedláčková"],
-    ["Šimek", "Šimková"],
+    ["Šimek", "Šimková"]
 ];
 
 const randomPrvek = (array) => array[Math.floor(Math.random() * array.length)];
@@ -63,9 +68,7 @@ const randomCas = (minVek, maxVek) => {
     if (typeof minVek !== "number" || typeof maxVek !== "number") {
         throw new Error("Věk musí být číslo");
     }
-    if (minVek > maxVek) {
-        [minVek, maxVek] = [maxVek, minVek];
-    }
+    if (minVek > maxVek) [minVek, maxVek] = [maxVek, minVek];
 
     const ted = new Date();
     const yearMs = 365.25 * 24 * 60 * 60 * 1000;
@@ -74,9 +77,20 @@ const randomCas = (minVek, maxVek) => {
     const maxBirth = ted.getTime() - minVek * yearMs;
 
     const randomTime = minBirth + Math.random() * (maxBirth - minBirth);
-
     return new Date(randomTime).toISOString();
 };
+
+// --- vlastní jednoduché funkce ---
+const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const round = (num, decimals = 0) => Math.round(num * 10 ** decimals) / 10 ** decimals;
+const median = (arr) => {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+};
+const min = (arr) => Math.min(...arr);
+const max = (arr) => Math.max(...arr);
+const sortBy = (arr, key) => [...arr].sort((a, b) => a[key] - b[key]);
 
 export const genereteEmployeeData = (dtoIn) => {
     if (!dtoIn.age || typeof dtoIn.age.min !== "number" || typeof dtoIn.age.max !== "number") {
@@ -122,25 +136,22 @@ export const getEmployeeStatistics = (seznam) => {
     });
 
     const uvazekH = seznam.map(osoba => osoba.workload);
+    const zenyWorkload = seznam.filter(osoba => osoba.gender === "female").map(osoba => osoba.workload);
 
-    const zenyWorkload = seznam
-        .filter(osoba => osoba.gender === "female")
-        .map(osoba => osoba.workload);
+    const averageAge = round(mean(vekHodnoty), 1);
+    const minAge = min(vekHodnoty);
+    const maxAge = max(vekHodnoty);
+    const medianAge = round(median(vekHodnoty), 1);
 
-    const averageAge = load.round(load.mean(vekHodnoty), 1);
-    const minAge = load.min(vekHodnoty);
-    const maxAge = load.max(vekHodnoty);
-    const medianAge = load.round(simpleS.median(vekHodnoty), 1);
-
-    const medianWorkload = load.round(simpleS.median(uvazekH), 1);
-    const averageWomenWorkload = load.round(load.mean(zenyWorkload), 1);
+    const medianWorkload = round(median(uvazekH), 1);
+    const averageWomenWorkload = round(mean(zenyWorkload), 1);
 
     const workload10 = seznam.filter(e => e.workload === 10).length;
     const workload20 = seznam.filter(e => e.workload === 20).length;
     const workload30 = seznam.filter(e => e.workload === 30).length;
     const workload40 = seznam.filter(e => e.workload === 40).length;
 
-    const sortedByWorkload = load.sortBy(seznam, 'workload');
+    const sortedByWorkload = sortBy(seznam, 'workload');
 
     return {
         total,
@@ -157,8 +168,8 @@ export const getEmployeeStatistics = (seznam) => {
         sortedByWorkload
     };
 };
+
 export const main = (dtoIn) => {
     const employeeData = genereteEmployeeData(dtoIn);
-    const dtoOut = getEmployeeStatistics(employeeData);
-    return dtoOut;
-}
+    return getEmployeeStatistics(employeeData);
+};
