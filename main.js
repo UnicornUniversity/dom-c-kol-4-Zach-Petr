@@ -1,7 +1,7 @@
 /**
- * @typedef {Object} DtoIn
- * @property {number} count - Počet generovaných zaměstnanců
- * @property {{min: number, max: number}} age - Minimální a maximální věk
+ * @typedef {object} DtoIn
+ * @property {number} count Počet generovaných zaměstnanců
+ * @property {{min: number, max: number}} age Minimální a maximální věk
  */
 const dtoIn = {
     count: 50,
@@ -54,8 +54,8 @@ const jmenaZ = [
 ];
 
 /**
- * @type {Array<[string, string]>}
  * Pole dvojic: [příjmení muž, příjmení žena]
+ * @type {Array<[string, string]>}
  */
 const prijmeni = [
     ["Novotný", "Novotná"],
@@ -76,17 +76,17 @@ const prijmeni = [
 ];
 
 /**
- * Vrací náhodný prvek pole.
- * @param {Array<any>} array
- * @returns {*}
+ * Vrátí náhodný prvek pole.
+ * @param {Array<any>} array Pole, ze kterého se vybírá náhodný prvek.
+ * @returns {*} Náhodně vybraný prvek.
  */
 const randomPrvek = (array) => array[Math.floor(Math.random() * array.length)];
 
 /**
- * Vygeneruje náhodné datum narození v rozmezí věků.
- * @param {number} minVek
- * @param {number} maxVek
- * @returns {string} ISO string data narození
+ * Vygeneruje náhodné datum narození podle rozsahu věků.
+ * @param {number} minVek Minimální věk osoby.
+ * @param {number} maxVek Maximální věk osoby.
+ * @returns {string} Datum narození jako ISO řetězec.
  */
 const randomCas = (minVek, maxVek) => {
     if (typeof minVek !== "number" || typeof maxVek !== "number") {
@@ -107,34 +107,42 @@ const randomCas = (minVek, maxVek) => {
     return new Date(randomTime).toISOString();
 };
 
-// --- Pomocné a matematické funkce, nechtěl jsem měnit package.json, a nešli mi vyvolat ---
+// --- Pomocné funkce ---
 
 /**
  * Zaokrouhlí číslo na zadaný počet desetinných míst.
- * @param {number} num
- * @param {number} [decimals=0]
- * @returns {number}
+ * @param {number} num Číslo k zaokrouhlení.
+ * @param {number} decimals Počet desetinných míst.
+ * @returns {number} Zaokrouhlený výsledek.
  */
-const round = (num, decimals = 0) => Math.round(num * 10 ** decimals) / 10 ** decimals;
+const round = (num, decimals) => Math.round(num * 10 ** decimals) / 10 ** decimals;
 
 /**
- * Vypočte průměr.
- * @param {number[]} arr
- * @returns {number}
+ * Vypočte průměr hodnot v poli.
+ * @param {number[]} arr Pole čísel.
+ * @returns {number} Aritmetický průměr.
  */
 const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-/** @param {number[]} arr @returns {number} */
+/**
+ * Vrací minimum pole.
+ * @param {number[]} arr Pole čísel.
+ * @returns {number} Nejnižší hodnota.
+ */
 const min = (arr) => Math.min(...arr);
 
-/** @param {number[]} arr @returns {number} */
+/**
+ * Vrací maximum pole.
+ * @param {number[]} arr Pole čísel.
+ * @returns {number} Nejvyšší hodnota.
+ */
 const max = (arr) => Math.max(...arr);
 
 /**
- * Setřídí objektové pole podle klíče.
- * @param {Array<Object>} arr
- * @param {string} key
- * @returns {Array<Object>}
+ * Seřadí objektové pole podle klíče.
+ * @param {object[]} arr Pole objektů.
+ * @param {string} key Klíč podle kterého se třídí.
+ * @returns {object[]} Seřazené pole.
  */
 const sortBy = (arr, key) => [...arr].sort((a, b) => {
     if (a[key] < b[key]) return -1;
@@ -143,9 +151,9 @@ const sortBy = (arr, key) => [...arr].sort((a, b) => {
 });
 
 /**
- * Vrací medián.
- * @param {number[]} arr
- * @returns {number}
+ * Vrací medián čísel v poli.
+ * @param {number[]} arr Pole čísel.
+ * @returns {number} Medián hodnot.
  */
 const median = (arr) => {
     const sorted = [...arr].sort((a, b) => a - b);
@@ -159,9 +167,9 @@ const median = (arr) => {
 // --- GENERÁTOR ZAMĚSTNANCŮ ---
 
 /**
- * Funkce z úkolu 3, pouze přejmenovaná
- * @param {DtoIn} dtoIn
- * @returns {Array<Object>} seznam zaměstnanců
+ * Generuje seznam zaměstnanců.
+ * @param {DtoIn} dtoIn Vstupní objekt s počtem a rozsahem věku.
+ * @returns {object[]} Pole zaměstnanců.
  */
 export const generateEmployeeData = (dtoIn) => {
     if (!dtoIn.age || typeof dtoIn.age.min !== "number" || typeof dtoIn.age.max !== "number") {
@@ -196,8 +204,8 @@ export const generateEmployeeData = (dtoIn) => {
 
 /**
  * Spočítá statistiky zaměstnanců.
- * @param {Array<Object>} seznam
- * @returns {Object} výstup statistik
+ * @param {object[]} seznam Pole zaměstnanců.
+ * @returns {object} Statistické údaje.
  */
 export const getEmployeeStatistics = (seznam) => {
     const total = seznam.length;
@@ -252,13 +260,12 @@ export const getEmployeeStatistics = (seznam) => {
 // --- HLAVNÍ FUNKCE ---
 
 /**
- * Hlavní funkce
- * @param {DtoIn} dtoIn
- * @returns {Object} statistiky zaměstnanců
+ * Spustí generování dat a výpočet statistik.
+ * @param {DtoIn} dtoIn Vstupní parametry.
+ * @returns {object} Statistické údaje zaměstnanců.
  */
 export const main = (dtoIn) => {
     const employeeData = generateEmployeeData(dtoIn);
     const dtoOut = getEmployeeStatistics(employeeData);
     return dtoOut;
 };
-
