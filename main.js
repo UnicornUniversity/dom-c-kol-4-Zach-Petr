@@ -1,5 +1,10 @@
 // --- DATA A POMOCNÉ FUNKCE ---
 
+/**
+ * @typedef {Object} DtoIn
+ * @property {number} count - Počet generovaných zaměstnanců
+ * @property {{min: number, max: number}} age - Minimální a maximální věk
+ */
 const dtoIn = {
     count: 50,
     age: {
@@ -8,29 +13,83 @@ const dtoIn = {
     }
 };
 
-const pohlavi = ["male", "female"];
-const uvazek = [10, 20, 30, 40];
+/** @type {string[]} */
+const pohlavi = [
+    "male",
+    "female",
+];
 
+/** @type {number[]} */
+const uvazek = [
+    10,
+    20,
+    30,
+    40,
+];
+
+/** @type {string[]} */
 const jmenaM = [
-    "Jakub", "Jan", "Tomáš", "Adam", "Matyáš", "Filip",
-    "Vojtěch", "Ondřej", "David", "Lukáš",
+    "Jakub",
+    "Jan",
+    "Tomáš",
+    "Adam",
+    "Matyáš",
+    "Filip",
+    "Vojtěch",
+    "Ondřej",
+    "David",
+    "Lukáš",
 ];
 
+/** @type {string[]} */
 const jmenaZ = [
-    "Jana", "Eva", "Renata", "Martina", "Božena", "Daniela",
-    "Růžena", "Anna", "Kateřina", "Radka",
+    "Jana",
+    "Eva",
+    "Renata",
+    "Martina",
+    "Božena",
+    "Daniela",
+    "Růžena",
+    "Anna",
+    "Kateřina",
+    "Radka",
 ];
 
+/**
+ * @type {Array<[string, string]>}
+ * Pole dvojic: [příjmení muž, příjmení žena]
+ */
 const prijmeni = [
-    ["Novotný", "Novotná"], ["Dvořák", "Dvořáková"], ["Černý", "Černá"],
-    ["Procházka", "Procházková"], ["Kučera", "Kučerová"], ["Veselý", "Veselá"],
-    ["Horák", "Horáková"], ["Němec", "Němcová"], ["Pokorný", "Pokorná"],
-    ["Král", "Králová"], ["Růžička", "Růžičková"], ["Beneš", "Benešová"],
-    ["Fiala", "Fialová"], ["Sedláček", "Sedláčková"], ["Šimek", "Šimková"],
+    ["Novotný", "Novotná"],
+    ["Dvořák", "Dvořáková"],
+    ["Černý", "Černá"],
+    ["Procházka", "Procházková"],
+    ["Kučera", "Kučerová"],
+    ["Veselý", "Veselá"],
+    ["Horák", "Horáková"],
+    ["Němec", "Němcová"],
+    ["Pokorný", "Pokorná"],
+    ["Král", "Králová"],
+    ["Růžička", "Růžičková"],
+    ["Beneš", "Benešová"],
+    ["Fiala", "Fialová"],
+    ["Sedláček", "Sedláčková"],
+    ["Šimek", "Šimková"],
 ];
 
+/**
+ * Vrací náhodný prvek pole.
+ * @param {Array<any>} array
+ * @returns {*}
+ */
 const randomPrvek = (array) => array[Math.floor(Math.random() * array.length)];
 
+/**
+ * Vygeneruje náhodné datum narození v rozmezí věků.
+ * @param {number} minVek
+ * @param {number} maxVek
+ * @returns {string} ISO string data narození
+ */
 const randomCas = (minVek, maxVek) => {
     if (typeof minVek !== "number" || typeof maxVek !== "number") {
         throw new Error("Věk musí být číslo");
@@ -50,17 +109,46 @@ const randomCas = (minVek, maxVek) => {
     return new Date(randomTime).toISOString();
 };
 
-// --- POMOCNÉ STATISTICKÉ FUNKCE ---
+// --- Pomocné a matematické funkce, nechtěl jsem měnit package.json, a nešli mi vyvolat ---
 
+/**
+ * Zaokrouhlí číslo na zadaný počet desetinných míst.
+ * @param {number} num
+ * @param {number} [decimals=0]
+ * @returns {number}
+ */
 const round = (num, decimals = 0) => Math.round(num * 10 ** decimals) / 10 ** decimals;
+
+/**
+ * Vypočte průměr.
+ * @param {number[]} arr
+ * @returns {number}
+ */
 const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+/** @param {number[]} arr @returns {number} */
 const min = (arr) => Math.min(...arr);
+
+/** @param {number[]} arr @returns {number} */
 const max = (arr) => Math.max(...arr);
+
+/**
+ * Setřídí objektové pole podle klíče.
+ * @param {Array<Object>} arr
+ * @param {string} key
+ * @returns {Array<Object>}
+ */
 const sortBy = (arr, key) => [...arr].sort((a, b) => {
     if (a[key] < b[key]) return -1;
     if (a[key] > b[key]) return 1;
     return 0;
 });
+
+/**
+ * Vrací medián.
+ * @param {number[]} arr
+ * @returns {number}
+ */
 const median = (arr) => {
     const sorted = [...arr].sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
@@ -72,6 +160,11 @@ const median = (arr) => {
 
 // --- GENERÁTOR ZAMĚSTNANCŮ ---
 
+/**
+ * Funkce z úkolu 3, pouze přejmenovaná
+ * @param {DtoIn} dtoIn
+ * @returns {Array<Object>} seznam zaměstnanců
+ */
 export const generateEmployeeData = (dtoIn) => {
     if (!dtoIn.age || typeof dtoIn.age.min !== "number" || typeof dtoIn.age.max !== "number") {
         throw new Error("age.min a age.max musí být zadány");
@@ -103,6 +196,11 @@ export const generateEmployeeData = (dtoIn) => {
 
 // --- VÝPOČET STATISTIK ---
 
+/**
+ * Spočítá statistiky zaměstnanců.
+ * @param {Array<Object>} seznam
+ * @returns {Object} výstup statistik
+ */
 export const getEmployeeStatistics = (seznam) => {
     const total = seznam.length;
 
@@ -155,8 +253,14 @@ export const getEmployeeStatistics = (seznam) => {
 
 // --- HLAVNÍ FUNKCE ---
 
+/**
+ * Hlavní funkce
+ * @param {DtoIn} dtoIn
+ * @returns {Object} statistiky zaměstnanců
+ */
 export const main = (dtoIn) => {
     const employeeData = generateEmployeeData(dtoIn);
     const dtoOut = getEmployeeStatistics(employeeData);
     return dtoOut;
 };
+
