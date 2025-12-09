@@ -1,5 +1,3 @@
-// --- DATA A POMOCNÉ FUNKCE ---
-
 /**
  * @typedef {Object} DtoIn
  * @property {number} count - Počet generovaných zaměstnanců
