@@ -107,8 +107,6 @@ const randomCas = (minVek, maxVek) => {
     return new Date(randomTime).toISOString();
 };
 
-// --- Pomocné funkce ---
-
 /**
  * Zaokrouhlí číslo na zadaný počet desetinných míst.
  * @param {number} num Číslo k zaokrouhlení.
@@ -118,28 +116,28 @@ const randomCas = (minVek, maxVek) => {
 const round = (num, decimals) => Math.round(num * 10 ** decimals) / 10 ** decimals;
 
 /**
- * Vypočte průměr hodnot v poli.
+ * Vypočítá průměr hodnot v poli.
  * @param {number[]} arr Pole čísel.
  * @returns {number} Aritmetický průměr.
  */
 const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
 /**
- * Vrací minimum pole.
+ * Vrací nejmenší položku v poli
  * @param {number[]} arr Pole čísel.
  * @returns {number} Nejnižší hodnota.
  */
 const min = (arr) => Math.min(...arr);
 
 /**
- * Vrací maximum pole.
+ * Vrací největší položku v poli
  * @param {number[]} arr Pole čísel.
  * @returns {number} Nejvyšší hodnota.
  */
 const max = (arr) => Math.max(...arr);
 
 /**
- * Seřadí objektové pole podle klíče.
+ * Seřadí pole podle klíče
  * @param {object[]} arr Pole objektů.
  * @param {string} key Klíč podle kterého se třídí.
  * @returns {object[]} Seřazené pole.
@@ -151,7 +149,7 @@ const sortBy = (arr, key) => [...arr].sort((a, b) => {
 });
 
 /**
- * Vrací medián čísel v poli.
+ * Vypočte medián
  * @param {number[]} arr Pole čísel.
  * @returns {number} Medián hodnot.
  */
@@ -164,10 +162,8 @@ const median = (arr) => {
     return sorted[mid];
 };
 
-// --- GENERÁTOR ZAMĚSTNANCŮ ---
-
 /**
- * Generuje seznam zaměstnanců.
+ * Přejmenovaná funkce main z úkolu 3
  * @param {DtoIn} dtoIn Vstupní objekt s počtem a rozsahem věku.
  * @returns {object[]} Pole zaměstnanců.
  */
@@ -199,8 +195,6 @@ export const generateEmployeeData = (dtoIn) => {
 
     return dtoOut;
 };
-
-// --- VÝPOČET STATISTIK ---
 
 /**
  * Spočítá statistiky zaměstnanců.
@@ -257,10 +251,8 @@ export const getEmployeeStatistics = (seznam) => {
     };
 };
 
-// --- HLAVNÍ FUNKCE ---
-
 /**
- * Spustí generování dat a výpočet statistik.
+ * Spustí generování seznamu zaměstnanců a výpočet statistik.
  * @param {DtoIn} dtoIn Vstupní parametry.
  * @returns {object} Statistické údaje zaměstnanců.
  */
